@@ -92,11 +92,28 @@ end
 
 local function createOverviewPanel()
 	local overviewPanel = createInfoContainer()
-	local addrText = "Your Address: " .. addressInUse
-	local addressText = overviewPanel + sheets.Text(1, 1, #addrText, 1, addrText)
-	local copyAddressBtn = overviewPanel + sheets.Button(overviewPanel.width - 9, 1, 8, 1, "Copy")
-	setGKWStyle(copyAddressBtn)
-	local balanceText = overviewPanel + sheets.Text(1, 3, overviewPanel.width - 1, 1, "Balance: " .. krist.getBalance(addressInUse) .. " KST")
+	local infoBox = overviewPanel + sheets.Container(1, 1, overviewPanel.width - 2, math.floor(overviewPanel.height * 0.25 + 0.5))
+	infoBox.style:setField("colour", sheets.colour.lightGrey)
+
+	local addrText = "Your Address: "
+	local addressText = infoBox + sheets.Text(1, 1, #addrText, 1, addrText)
+	addressText.style:setField("colour", sheets.colour.lightGrey)
+	addressText.style:setField("textColour", sheets.colour.black)
+
+	local usedAddressText = infoBox + sheets.Text(#addrText + 1, 1, #addressInUse, 1, addressInUse)
+	usedAddressText.style:setField("colour", sheets.colour.lightGrey)
+	usedAddressText.style:setField("textColour", sheets.colour.white)
+
+	local balText = "Balance: "
+	local balanceText = infoBox + sheets.Text(1, 3, infoBox.width - 1, 1, balText)
+	balanceText.style:setField("colour", sheets.colour.lightGrey)
+	balanceText.style:setField("textColour", sheets.colour.black)
+
+	local usedBalText = tostring((krist.getBalance(addressInUse) or "N/A") .. " KST")
+	local usedBalanceText = infoBox + sheets.Text(#balText + 1, 3, #usedBalText, 1, usedBalText)
+	usedBalanceText.style:setField("colour", sheets.colour.lightGrey)
+	usedBalanceText.style:setField("textColour", sheets.colour.white)
+
 	return overviewPanel
 end
 
