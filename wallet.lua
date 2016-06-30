@@ -92,7 +92,10 @@ end
 
 local function createOverviewPanel()
 	local overviewPanel = createInfoContainer()
-	local infoBox = overviewPanel + sheets.Container(1, 1, overviewPanel.width - 2, math.floor(overviewPanel.height * 0.25 + 0.5))
+	overviewPanel.type = "overview"
+
+	local infoHeight = math.floor(overviewPanel.height * 0.25 + 0.5)
+	local infoBox = overviewPanel + sheets.Container(1, 1, overviewPanel.width - 2, infoHeight)
 	infoBox.style:setField("colour", sheets.colour.lightGrey)
 
 	local addrText = "Your Address: "
@@ -117,9 +120,71 @@ local function createOverviewPanel()
 	return overviewPanel
 end
 
-local function setInfoContainer(container)
+local function createTransactionPanel()
+	local transactionPanel = createInfoContainer()
+	transactionPanel.type = "transaction"
+
+	local makeTransferPanel = transactionPanel + sheets.Container(1, 1, transactionPanel.width - 2, 9)
+	makeTransferPanel.style:setField("colour", sheets.colour.lightGrey)
+
+	local makeTransText = "Make transfer:"
+	local makeTransferText = makeTransferPanel + sheets.Text(1, 1, #makeTransText, 1, makeTransText)
+	makeTransferText.style:setField("colour", sheets.colour.lightGrey)
+	makeTransferText.style:setField("textColour", sheets.colour.black)
+
+	local toTxt = "Recipient: "
+	local toText = makeTransferPanel + sheets.Text(1, 3, #toTxt, 1, toTxt)
+	toText.style:setField("colour", sheets.colour.lightGrey)
+	toText.style:setField("textColour", sheets.colour.black)
+	local toField = makeTransferPanel + sheets.TextInput(#toTxt + 1, 3, makeTransferPanel.width - #toTxt - 2, 1)
+	toField.style:setField("colour", sheets.colour.grey)
+	toField.style:setField("textColour", sheets.colour.lightGrey)
+	toField.style:setField("textColour.focussed", sheets.colour.white)
+
+	local amtTxt = "Amount: "
+	local amtText = makeTransferPanel + sheets.Text(1, 5, #amtTxt, 1, amtTxt)
+	amtText.style:setField("colour", sheets.colour.lightGrey)
+	amtText.style:setField("textColour", sheets.colour.black)
+	local amtField = makeTransferPanel + sheets.TextInput(#amtTxt + 1, 5, makeTransferPanel.width - #amtTxt - 2, 1)
+	amtField.style:setField("colour", sheets.colour.grey)
+	amtField.style:setField("textColour", sheets.colour.lightGrey)
+	amtField.style:setField("textColour.focussed", sheets.colour.white)
+
+	function amtField:onUnFocus()
+		if tonumber(amtField.text) == nil then
+			amtField.style:setField("colour", sheets.colour.red)
+		else
+			amtField.style:setField("colour", sheets.colour.grey)
+		end
+	end
+
+	local makeTransferButtonText = "Transfer \16"
+	local makeTransferButton = makeTransferPanel + sheets.Button(makeTransferPanel.width - #makeTransferButtonText - 3, 7, #makeTransferButtonText + 2, 1, makeTransferButtonText)
+	makeTransferButton.style:setField("colour", sheets.colour.green)
+	makeTransferButton.style:setField("colour.pressed", sheets.colour.lime)
+
+	return transactionPanel
+end
+
+local function setInfoContainer(container, callback)
 	screen:removeChild(infoContainer)
 	infoContainer = screen + container
+
+	if callback then
+		return callback()
+	end
+end
+
+function sidebarButtons.overview:onClick(btn)
+	if btn == 1 then
+		return setInfoContainer(createOverviewPanel())
+	end
+end
+
+function sidebarButtons.transactions:onClick(btn)
+	if btn == 1 then
+		return setInfoContainer(createTransactionPanel())
+	end
 end
 
 setInfoContainer(createOverviewPanel())

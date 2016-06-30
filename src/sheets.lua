@@ -278,7 +278,7 @@ e[#e+1]={time=s,response=n,ID=a}return a end\
 function timer.cancel(t)parameters.check(1,\"ID\",\"number\",t)for n=#e,1,-1 do\
 if\
 e[n].ID==t then return table.remove(e,n).time-o end end return 0 end function timer.step()i=o o=os.clock()end\
-function timer.getDelta()return o-i end function timer.update(a)print(a)local t=false for n=#e,1,-1 do if e[n].ID==a then\
+function timer.getDelta()return o-i end function timer.update(a)local t=false for n=#e,1,-1 do if e[n].ID==a then\
 table.remove(e,n).response()t=true end end\
 return t end\
 timer.step()","lib.timer",nil,_ENV)if not __f then error(__err,0)end __f()
